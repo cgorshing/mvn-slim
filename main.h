@@ -3,7 +3,7 @@
 
 #include "thread_serve.h"
 
-#define BUF_SIZE 1024
+#define BUF_SIZE 32768
 #define OK_IMAGE    "HTTP/1.0 200 OK\nContent-Type:image/gif\n\n"
 #define OK_TEXT     "HTTP/1.0 200 OK\nContent-Type:text/html\n\n"
 #define NOTOK_404   "HTTP/1.0 404 Not Found\nContent-Type:text/html\n\n"
