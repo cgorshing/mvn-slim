@@ -1,8 +1,18 @@
 # Project Title
 
-This is to solve an itch/need I have. I wanted a small memory footprint Maven
-repo manager. I also don't need a lot of the features other repo managers have.
-I want to have the configuration easily under source control as well.
+This is to solve an itch/need of having a maven repository manager that is
+light on memory, is plain text driven, and limited frills. Although memory is
+definitely cheap, still having a repo manager being sensitive to memory is
+needed so they can be ran within a vagrant vm, or AWS instance and not require
+too many resources. This will not have many of the features others repo
+managers have, that is not the goal of this project.
+
+Another item beleived to be beneficial is the provisioning of servers using
+tools like Terraform and Chef. Some of the existing repo managers are "designed
+primarily for configuration from the UI". This project takes a different
+approach, similar to how Apache's httpd is configured, being plain text driven.
+Of course an added benefit of this is more easily adding server configuration
+to source control as well.
 
 ## Getting Started
 
