@@ -99,7 +99,9 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+This are some things that were once in the code base and the comments have been
+removed. Leaving here for longivity.
 
+* https://github.com/ankushagarwal/nweb/blob/master/nweb23.c
+* http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/
+* code adapted from stackoverflow.com
