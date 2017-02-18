@@ -335,11 +335,12 @@ int main(int argc, char *args[])
   log_msg("before creating scheduler thread");
   printf("before creating thread sockfd is %d\n",ids);
 
-  pthread_create(&t_listener,NULL,&thread_listen,&ids);      //creating listener thread
-  sleep(sleep_time);              // putting scheduler to sleep
-  pthread_create(&t_scheduler,NULL,&thread_scheduler,&sched_flag);  //creating scheduler thread
-  pthread_join(t_listener,NULL);
-  pthread_join(t_scheduler,NULL);
+  pthread_create(&t_listener, NULL, &thread_listen, &ids);      //creating listener thread
+  //sleep(sleep_time);              // putting scheduler to sleep
+  pthread_create(&t_scheduler, NULL, &thread_scheduler, NULL);  //creating scheduler thread
+  pthread_join(t_listener, NULL);
+  log_msg("2");
+  pthread_join(t_scheduler, NULL);
   log_msg("after join in main");
   display();
   close(sockfd);
