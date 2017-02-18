@@ -224,16 +224,13 @@ void *thread_listen(void *arg)
 
 int main(int argc, char *args[])
 {
-  int thread_status[10];       
-  pthread_t t_listener,t_scheduler,t_serve[10];
-  int sockfd,ids;
-  char *dir;
+  int thread_status[10];
+  pthread_t t_serve[10];
+  int sockfd;
+  int ids;
+  char *dir = malloc(sizeof(char *));
   file=malloc(sizeof(char *));
-  dir=malloc(sizeof(char *));
-  
-  
 
-  int portnum=8080,threadnum=4,sleep_time=60;
 
   //********************
   //HANDLE SIGTERM
