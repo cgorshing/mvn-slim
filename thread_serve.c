@@ -30,13 +30,13 @@ void *thread_serve()
     pthread_mutex_unlock(&sthread_mutex);
     log_msg("serving thread unlocked sthread_mutex");
 
-    time_t now;          // getting the time the job has been assigned to the serving thread
+    time_t now;
     time(&now);
-    struct tm * ct=localtime(&now); //getting localtime
+    struct tm * ct = localtime(&now);
     char ch[128], time_serve[128];
     struct timeval tv;
-    strftime(ch, sizeof ch, "[%d/%b/%Y : %H:%M:%S %z]", ct); //format of the timestamp string we need
-    snprintf(time_serve, sizeof time_serve, ch, tv.tv_usec); //printing the needed timestamp string
+    strftime(ch, sizeof ch, "[%Y-%m-%d %H:%M:%S%z]", ct);
+    snprintf(time_serve, sizeof time_serve, ch, tv.tv_usec);
 
     unsigned int ip=r.cli_ipaddr;
 
@@ -143,28 +143,28 @@ void *thread_scheduler(void *arg)
   {
     if(front!=NULL)
     {
-      log_msg("Going into sem_wait");
+      log_msg("sssGoing into sem_wait");
 
       //Wait for an available thread
       sem_wait(sem);
-      log_msg("in sched thread before extracting element");
-      log_msg("scheduler locking mutex");
+      log_msg("sssin sched thread before extracting element");
+      log_msg("sssscheduler locking mutex");
       pthread_mutex_lock(&sthread_mutex);
 
-      log_msg("Extracting next item from list...");
+      log_msg("sssExtracting next item from list...");
       pthread_mutex_lock(&qmutex);
       r2 = extract_element();
       pthread_mutex_unlock(&qmutex);
-      log_msg("Done Extracting next item from list.");
+      log_msg("sssDone Extracting next item from list.");
 
       // call serving thread from thread pool
 
-      log_msg("in sched thread before sending to serving thread");
+      log_msg("sssin sched thread before sending to serving thread");
 
       pthread_cond_signal(&cond_var);
 
       pthread_mutex_unlock(&sthread_mutex);
-      log_msg("in sched thread unlocked sthread mutex");
+      log_msg("sssin sched thread unlocked sthread mutex");
     }
   }
 }
