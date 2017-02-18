@@ -142,7 +142,8 @@ void *thread_serve()
 //scheduler thread
 void *thread_scheduler(void *arg)
 {
-  int acceptfd,n;
+  int acceptfd;
+  int n;
 
   while(1)
   {
