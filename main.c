@@ -41,7 +41,15 @@ struct node *temp = NULL;
 struct node *new = NULL;
 
 void log_msg(char * message) {
-  printf("%s\n", message);
+  time_t now;
+  time(&now);
+  struct tm * ct=localtime(&now); //getting localtime
+  char ch[128], time_serve[128];
+  struct timeval tv;
+  strftime(ch, sizeof ch, "[%Y-%m-%d %H:%M:%S%z]", ct);
+  snprintf(time_serve, sizeof time_serve, ch, tv.tv_usec);
+
+  printf("%s %s\n", time_serve, message);
 }
 
 void handle_term(int signum) {
