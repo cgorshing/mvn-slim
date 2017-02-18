@@ -81,7 +81,7 @@ Copy executable out and go.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/cgorshing/wrench/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
