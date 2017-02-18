@@ -168,40 +168,40 @@ void *thread_listen(void *arg)
     strftime(ch, sizeof ch, "[%d/%b/%Y : %H:%M:%S %z]", ct); //format of the timestamp string we need
     snprintf(time_arrival, sizeof time_arrival, ch, tv.tv_usec); //printing the needed timestamp string
 
-  /*  FILE * file_des=fopen(file,"a"); 
-  fprintf(file_des,"%s\n",time_arrival);
-  fclose(file_des);
-  */  
+    /*  FILE * file_des=fopen(file,"a");
+    fprintf(file_des,"%s\n",time_arrival);
+    fclose(file_des);
+    */
     char *file_name=malloc(sizeof(char *));
 
     memset(in_buf, 0, sizeof(in_buf));
-    retcode = recv(acceptfd, in_buf, BUF_SIZE, 0);      
-            
+    retcode = recv(acceptfd, in_buf, BUF_SIZE, 0);
+
     log_msg("in listening thread before getting file name");
-    
+
     if (retcode < 0)
-    { 
-      log_msg("recv error detected ..."); 
+    {
+      log_msg("recv error detected ...");
     }
     else
-    {    
+    {
       strtok(in_buf, " ");
-      file_name = strtok(NULL, " ");      
+      file_name = strtok(NULL, " ");
     }
 
     if(file_name!=NULL)
     {
       //ids2=acceptfd;
-      //pthread_create(&t_serve[i],NULL,&thread_serve,&ids2);  
-      
-      //off_t fsize(const char *filename) 
-      k=1,j=0; 
+      //pthread_create(&t_serve[i],NULL,&thread_serve,&ids2);
+
+      //off_t fsize(const char *filename)
+      k=1,j=0;
       while(k<strlen(file_name))
       {
         fname[j]=file_name[k];
         ++k;
         ++j;
-      }    
+      }
 
       if (stat(fname, &st) == 0) {
         file_size=st.st_size;
@@ -220,7 +220,7 @@ void *thread_listen(void *arg)
     {
       continue;
     }
-  }        
+  }
 }
 
 int main(int argc, char *args[])
