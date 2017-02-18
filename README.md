@@ -16,8 +16,8 @@ to source control as well.
 
 ## Getting Started
 
-As of now, this is being built on MacOSX. Other platforms will be tested, but
-nothing as of yet.
+As of now, this is being built on MacOSX. Other platforms will be tested (most
+definitely Ubuntu 14.04 and Windows7), but nothing as of yet.
 
 ### Prerequisites
 
