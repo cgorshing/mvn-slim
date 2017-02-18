@@ -222,9 +222,6 @@ void *thread_scheduler(void *arg)
         }
       }
       pthread_mutex_lock(&sthread_mutex);
-      
-      r2=removesjf(shortestjob_fd);
-      //printf("extracted element");
       pthread_cond_signal(&cond_var);
       pthread_mutex_unlock(&sthread_mutex);
             
