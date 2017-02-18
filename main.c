@@ -5,13 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <malloc/malloc.h>
-#include <fcntl.h>        
-#include <sys/stat.h> 
+#include <fcntl.h>
+#include <sys/stat.h>
 #include <time.h>
 #include <semaphore.h>
 #include <signal.h>
@@ -60,7 +60,7 @@ void display()
   else
   {
     int a;
-    
+
     temp = front;
     while(temp!=NULL)
     {
@@ -69,7 +69,7 @@ void display()
       temp=temp->link;
     }
   }
-} 
+}
 
 // queue functions
 void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,char * in_buf)
@@ -87,7 +87,7 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
   new->r.cli_ipaddr=ip;
   strcpy(new->r.time_arrival,b);
   strcpy(new->r.in_buf,c);
-  
+
   //new->r.file_name=a;
   new->r.size=size;
   new->link=NULL;
@@ -97,7 +97,7 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
     rear->link=new;
   rear=new;
   log_msg("inserted request into queue");
-  display();  
+  display();
 }
 
 struct request extract_element()
@@ -105,13 +105,13 @@ struct request extract_element()
   if(front==NULL)
     log_msg("empty queue");
   else
-  {  
+  {
     struct request r1;
     p=front;
     printf("extracted element: %d",p->r.acceptfd);
     front=front->link;
     r1.acceptfd=p->r.acceptfd;
-    strcpy(r1.file_name,p->r.file_name);    
+    strcpy(r1.file_name,p->r.file_name);
     r1.size=p->r.size;
     free(p);
     return(r1);
@@ -127,14 +127,14 @@ struct request extract_element()
 void *thread_listen(void *arg)
 {
   int sockfd=*((int*)arg);
-  int i,size;  
+  int i,size;
   int acceptfd,ids2;
   socklen_t clilen;
   int newsockfd[10],c;
   int n;
   char buffer[256];
   pthread_t t_serve[10];
-  struct sockaddr_in cli_addr;  
+  struct sockaddr_in cli_addr;
   clilen = sizeof(cli_addr);
   unsigned int retval;
   char request_buffer[1024];
@@ -308,13 +308,13 @@ int main(int argc, char *args[])
         exit(1);
       }
   }
-  
+
   struct sockaddr_in serv_addr;
   log_msg("before socket creation");
-  sockfd = socket(AF_INET, SOCK_STREAM,0);      //creation of socket  
+  sockfd = socket(AF_INET, SOCK_STREAM,0);      //creation of socket
   //s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
   printf("after socket creation socket id is %d\n", sockfd);
-  if (sockfd < 0) 
+  if (sockfd < 0)
     perror("error creating socket\n");
   bzero((char *) &serv_addr, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
@@ -328,8 +328,8 @@ int main(int argc, char *args[])
   log_msg("after bind");
 
   for(int w = 0; w < threadnum; ++w) {
-    pthread_create(&t_serve[w],NULL,&thread_serve,NULL); 
-  } 
+    pthread_create(&t_serve[w], NULL, &thread_serve, NULL);
+  }
 
   ids=sockfd;
   log_msg("before creating scheduler thread");
