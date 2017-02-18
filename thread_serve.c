@@ -1,5 +1,3 @@
-//https://github.com/ankushagarwal/nweb/blob/master/nweb23.c
-//
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,15 +40,12 @@ void *thread_serve()
 
     unsigned int ip=r.cli_ipaddr;
 
-    /* code adapted from stackoverflow.com */
     unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
     bytes[1] = (ip >> 8) & 0xFF;
     bytes[2] = (ip >> 16) & 0xFF;
     bytes[3] = (ip >> 24) & 0xFF;
-    /* end of code adapted from stackoverflow.com */
 
-    //struct request r= *((struct request *)arg);
     if (debug_flag == 0 && log_flag == 1)
     {
       FILE * file_des=fopen(file,"a");

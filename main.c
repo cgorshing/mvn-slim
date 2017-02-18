@@ -1,5 +1,3 @@
-//https://github.com/ankushagarwal/nweb/blob/master/nweb23.c
-//
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
