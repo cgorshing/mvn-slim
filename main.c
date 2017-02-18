@@ -254,8 +254,6 @@ int main(int argc, char *args[])
   // Parser code
   for(i=0;i<argc;i++)
   {
-    //printf("\ncomparing%d",i);
-    
     if(strcmp(args[i],"-h")==0)
     {
       help_flag=1;
