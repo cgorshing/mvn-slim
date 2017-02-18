@@ -128,9 +128,7 @@ void *thread_serve()
       close(acceptfd);
 
       //pthread_mutex_lock(&sthread_mutex);
-      sem_post(sem);
       //pthread_mutex_unlock(&sthread_mutex);
-      log_msg("after semaphore post");
     }
   }
 }
@@ -145,10 +143,6 @@ void *thread_scheduler(void *arg)
   {
     if(front!=NULL)
     {
-      log_msg("sssGoing into sem_wait");
-
-      //Wait for an available thread
-      sem_wait(sem);
       log_msg("sssin sched thread before extracting element");
       log_msg("sssscheduler locking mutex");
       pthread_mutex_lock(&sthread_mutex);

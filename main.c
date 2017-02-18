@@ -26,7 +26,6 @@ pthread_t t_scheduler;
 
 int received_interrupt = 0;
 
-sem_t *sem;
 int debug_flag=0;
 int log_flag=0;
 char * file=NULL;
@@ -215,6 +214,7 @@ void *thread_listen(void *arg)
 
       pthread_mutex_lock(&qmutex);
       insertion(acceptfd, file_name, file_size, ip, time_arrival, in_buf);
+
       pthread_mutex_unlock(&qmutex);
 
       log_msg("inserted into queue");
@@ -294,12 +294,6 @@ int main(int argc, char *args[])
       time_flag=1;
       sleep_time=atoi(args[i+1]);
     }
-  }
-
-  sem_unlink("wrenchsemaphore");
-  if ((sem = sem_open("wrenchsemaphore", O_CREAT | O_EXCL, 0600, threadnum)) == SEM_FAILED) {
-    perror("semaphore initilization");
-    exit(1);
   }
 
   //printf( "debug : %d, help: %d, log: %d, file name : %s port num : %d, dir : %d dir name: %s, time :%d ,thread num : %d\n",debug_flag,help_flag,log_flag,file,portnum,dir_flag,dir,sleep_time,threadnum);

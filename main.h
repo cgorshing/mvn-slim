@@ -9,8 +9,6 @@
 #define NOTOK_404   "HTTP/1.0 404 Not Found\nContent-Type:text/html\n\n"
 #define MESS_404    "<html><body><h1>FILE NOT FOUND</h1></body></html>"
 
-sem_t *sem;
-
 extern int received_interrupt;
 
 extern int debug_flag;
