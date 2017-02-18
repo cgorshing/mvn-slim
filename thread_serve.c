@@ -15,6 +15,8 @@
 
 #include "main.h"
 
+struct request pop_message();
+
 void *thread_serve()
 {
   while(1)
@@ -26,7 +28,7 @@ void *thread_serve()
     log_msg("got signal");
     //wait on condition mutex
 
-    struct request r=r2;
+    struct request r = r2;
     pthread_mutex_unlock(&sthread_mutex);
     log_msg("serving thread unlocked sthread_mutex");
 
@@ -151,11 +153,7 @@ void *thread_scheduler(void *arg)
       log_msg("sssscheduler locking mutex");
       pthread_mutex_lock(&sthread_mutex);
 
-      log_msg("sssExtracting next item from list...");
-      pthread_mutex_lock(&qmutex);
-      r2 = extract_element();
-      pthread_mutex_unlock(&qmutex);
-      log_msg("sssDone Extracting next item from list.");
+      r2 = pop_message();
 
       // call serving thread from thread pool
 
@@ -167,4 +165,16 @@ void *thread_scheduler(void *arg)
       log_msg("sssin sched thread unlocked sthread mutex");
     }
   }
+}
+
+struct request pop_message() {
+  struct request result;
+
+  log_msg("sssExtracting next item from list...");
+  pthread_mutex_lock(&qmutex);
+  result = extract_element();
+  pthread_mutex_unlock(&qmutex);
+  log_msg("sssDone Extracting next item from list.");
+
+  return result;
 }
