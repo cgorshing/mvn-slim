@@ -207,7 +207,6 @@ void *thread_listen(void *arg)
         file_size=st.st_size;
       }
 
-      printf("size of file %s is %zd",file_name,file_size);
       log_msg("in listening thread after accepting and before inserting into queue");
       //pthread_mutex_lock(&qmutex);
       insertion(acceptfd,file_name,file_size,ip,time_arrival,in_buf);
