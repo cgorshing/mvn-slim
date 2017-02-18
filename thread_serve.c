@@ -125,17 +125,15 @@ void *thread_serve()
             send(acceptfd, out_buf, buffer_length, 0);     
                  
 /* end of code adapted from http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/ */
-    
-  printf("\nin serving thread after sending file\n");
-    
-    //pthread_mutex_lock(&sthread_mutex);
-    
-            sem_post(sem);
-    printf("\n got mutex ,incremented number of free threads: %d\n",free_thread);
-    //pthread_mutex_unlock(&sthread_mutex);
-    printf("\nafter semaphore post\n");
           }
         }
+
+        //Done sending to client
+
+        //pthread_mutex_lock(&sthread_mutex);
+        sem_post(sem);
+        //pthread_mutex_unlock(&sthread_mutex);
+        log_msg("after semaphore post");
       }
     }
   }
