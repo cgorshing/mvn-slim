@@ -128,6 +128,7 @@ void *thread_serve()
         }
 
         //Done sending to client
+        close(acceptfd);
 
         //pthread_mutex_lock(&sthread_mutex);
         sem_post(sem);
