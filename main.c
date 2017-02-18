@@ -23,6 +23,9 @@ pthread_mutex_t qmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sthread_mutex=PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond_var = PTHREAD_COND_INITIALIZER;
 
+
+int received_interrupt = 0;
+
 sem_t *sem;
 int free_thread;
 int sched_flag=0;

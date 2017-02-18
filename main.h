@@ -12,6 +12,9 @@
 sem_t *sem;
 extern int free_thread;
 extern int sched_flag;
+
+extern int received_interrupt;
+
 extern int debug_flag;
 extern int log_flag;
 extern char * file;
