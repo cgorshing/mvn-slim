@@ -248,11 +248,17 @@ int main(int argc, char *args[])
   //HANDLE SIGTERM
   //********************
 
+  int portnum = 8080;
+  int threadnum = 4;
+  int sleep_time = 60;
   int i;
-  int help_flag=0,dir_flag=0,time_flag,threadnum_flag=0;
-  
+  int help_flag = 0;
+  int dir_flag = 0;
+  int time_flag;
+  int threadnum_flag = 0;
+
   // Parser code
-  for(i=0;i<argc;i++)
+  for (i = 0; i < argc; ++i)
   {
     if(strcmp(args[i],"-h")==0)
     {
