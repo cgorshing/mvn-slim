@@ -14,6 +14,7 @@
 #include <sys/stat.h> 
 #include <time.h>
 #include <semaphore.h>
+#include <signal.h>
 
 #include "main.h"
 #include "thread_serve.h"
@@ -38,6 +39,15 @@ struct node *new = NULL;
 
 void log_msg(char * message) {
   printf("%s\n", message);
+}
+
+void handle_term(int signum) {
+  received_interrupt = 1;
+
+  pthread_cancel(t_listener);
+  pthread_cancel(t_scheduler);
+
+  write(0, "Received interrupt signal!\n", 27);
 }
 
 void display()
