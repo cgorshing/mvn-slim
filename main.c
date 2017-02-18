@@ -247,6 +247,7 @@ int main(int argc, char *args[])
   //********************
   //HANDLE SIGTERM
   //********************
+
   int i;
   int help_flag=0,dir_flag=0,time_flag,threadnum_flag=0;
   
