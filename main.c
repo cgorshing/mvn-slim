@@ -235,6 +235,19 @@ int main(int argc, char *args[])
   
 
   int portnum=8080,threadnum=4,sleep_time=60;
+
+  //********************
+  //HANDLE SIGTERM
+  //********************
+  //struct sigaction action;
+  //memset(&action, 0, sizeof(struct sigaction));
+  //action.sa_handler = handle_term;
+  //sigaction(SIGTERM, &action, NULL);
+  //sigaction(SIGINT, &action, NULL);
+  signal(SIGINT, handle_term);
+  //********************
+  //HANDLE SIGTERM
+  //********************
   int i;
   int help_flag=0,dir_flag=0,time_flag,threadnum_flag=0;
   
