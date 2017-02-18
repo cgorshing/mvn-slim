@@ -51,7 +51,7 @@ void *thread_serve()
     /* end of code adapted from stackoverflow.com */
 
     //struct request r= *((struct request *)arg);
-    if(debug_flag==0&& log_flag==1)
+    if (debug_flag == 0 && log_flag == 1)
     {
       FILE * file_des=fopen(file,"a");
       log_msg("in serving thread");
@@ -61,7 +61,7 @@ void *thread_serve()
 
       fclose(file_des);
     }
-    else if(debug_flag==1)
+    else if (debug_flag == 1)
     {
       printf("%d.%d.%d.%d\t-\t %s\t %s\t %s \t status\t %d\n", bytes[0], bytes[1], bytes[2], bytes[3],r.time_arrival,time_serve,r.in_buf,r.size);
       //fprintf(stdout,"%s\t %s\t %s \t status\t %d\n",r.time_arrival,time_serve,r.in_buf,r.size);
@@ -72,7 +72,7 @@ void *thread_serve()
     char           in_buf[BUF_SIZE];
     char           out_buf[BUF_SIZE];
     char           *file_name;
-    file_name=malloc(sizeof(char *));
+    file_name = malloc(sizeof(char *));
     int acceptfd;
     unsigned int   fd1;
     unsigned int   buffer_length;
@@ -80,61 +80,60 @@ void *thread_serve()
     int m;
 
     log_msg("in serving thread before copying variables");
-    acceptfd=r.acceptfd;
-    file_name=r.file_name;
+    acceptfd = r.acceptfd;
+    file_name = r.file_name;
     log_msg("in serving thread after copying variables");
 
     printf("in serving thread file name is %s\n",file_name);
-    {
-      log_msg("in serving thread opening file");
+
+    log_msg("in serving thread opening file");
 
 /* This part of code adopted from http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/ */
 
-      fd1 = open(&file_name[1], O_RDONLY, S_IREAD | S_IWRITE);
+    fd1 = open(&file_name[1], O_RDONLY, S_IREAD | S_IWRITE);
 
-      memset(out_buf, 0, sizeof(out_buf));
+    memset(out_buf, 0, sizeof(out_buf));
 
-      if (fd1 == -1)
+    if (fd1 == -1)
+    {
+      printf("File %s not found - sending an HTTP 404 \n", &file_name[1]);
+      strcpy(out_buf, NOTOK_404);
+      send(acceptfd, out_buf, strlen(out_buf), 0);
+      strcpy(out_buf, MESS_404);
+      send(acceptfd, out_buf, strlen(out_buf), 0);
+    }
+    else
+    {
+      printf("File %s is being sent\n", &file_name[1]);
+      if ((strstr(file_name, ".jpg") != NULL)||(strstr(file_name, ".gif") != NULL))
       {
-        printf("File %s not found - sending an HTTP 404 \n", &file_name[1]);
-        strcpy(out_buf, NOTOK_404);
-        send(acceptfd, out_buf, strlen(out_buf), 0);
-        strcpy(out_buf, MESS_404);
-        send(acceptfd, out_buf, strlen(out_buf), 0);
+        strcpy(out_buf, OK_IMAGE);
       }
       else
       {
-        printf("File %s is being sent\n", &file_name[1]);
-        if ((strstr(file_name, ".jpg") != NULL)||(strstr(file_name, ".gif") != NULL))
-        {
-          strcpy(out_buf, OK_IMAGE);
-        }
-        else
-        {
-          strcpy(out_buf, OK_TEXT);
-        }
-
-        send(acceptfd, out_buf, strlen(out_buf), 0);
-
-        buffer_length = 1;
-        while (buffer_length > 0)
-        {
-          buffer_length = read(fd1, out_buf, BUF_SIZE);
-          if (buffer_length > 0)
-          {
-            send(acceptfd, out_buf, buffer_length, 0);
-/* end of code adapted from http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/ */
-          }
-        }
-
-        //Done sending to client
-        close(acceptfd);
-
-        //pthread_mutex_lock(&sthread_mutex);
-        sem_post(sem);
-        //pthread_mutex_unlock(&sthread_mutex);
-        log_msg("after semaphore post");
+        strcpy(out_buf, OK_TEXT);
       }
+
+      send(acceptfd, out_buf, strlen(out_buf), 0);
+
+      buffer_length = 1;
+      while (buffer_length > 0)
+      {
+        buffer_length = read(fd1, out_buf, BUF_SIZE);
+        if (buffer_length > 0)
+        {
+          send(acceptfd, out_buf, buffer_length, 0);
+/* end of code adapted from http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/ */
+        }
+      }
+
+      //Done sending to client
+      close(acceptfd);
+
+      //pthread_mutex_lock(&sthread_mutex);
+      sem_post(sem);
+      //pthread_mutex_unlock(&sthread_mutex);
+      log_msg("after semaphore post");
     }
   }
 }
