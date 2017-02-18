@@ -275,15 +275,6 @@ int main(int argc, char *args[])
       time_flag=1;    
       sleep_time=atoi(args[i+1]);
     }
-    else if(strcmp(args[i],"-s")==0)
-    {
-      if (strcmp(args[i+1],"FCFS")==0)    
-        sched_flag=0;
-      else if(strcmp(args[i+1],"SJF") == 0)
-        sched_flag=1;
-      else
-        printf("Please enter a proper scheduling algorithm");
-    }
   }
   
   //sem = sem_open(&sem,0,threadnum);
