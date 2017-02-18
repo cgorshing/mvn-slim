@@ -164,6 +164,7 @@ void *thread_listen(void *arg)
   {
     log_msg("in listening thread before accept");
     acceptfd = accept(sockfd,(struct sockaddr *) &cli_addr,&clilen);
+
     if (acceptfd < 0)
       perror("error in accepting");
 
@@ -197,22 +198,19 @@ void *thread_listen(void *arg)
       file_name = strtok(NULL, " ");
     }
 
-    if(file_name!=NULL)
+    if(file_name != NULL)
     {
-      //ids2=acceptfd;
-      //pthread_create(&t_serve[i],NULL,&thread_serve,&ids2);
-
-      //off_t fsize(const char *filename)
-      k=1,j=0;
-      while(k<strlen(file_name))
+      k=1;
+      j=0;
+      while(k < strlen(file_name))
       {
-        fname[j]=file_name[k];
+        fname[j] = file_name[k];
         ++k;
         ++j;
       }
 
       if (stat(fname, &st) == 0) {
-        file_size=st.st_size;
+        file_size = st.st_size;
       }
 
       log_msg("in listening thread after accepting and before inserting into queue");
