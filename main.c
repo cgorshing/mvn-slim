@@ -348,12 +348,18 @@ int main(int argc, char *args[])
   printf("before creating thread sockfd is %d\n",ids);
 
   pthread_create(&t_listener, NULL, &thread_listen, &ids);      //creating listener thread
-  //sleep(sleep_time);              // putting scheduler to sleep
   pthread_create(&t_scheduler, NULL, &thread_scheduler, NULL);  //creating scheduler thread
+
+  log_msg("Waiting on listener thread");
   pthread_join(t_listener, NULL);
-  log_msg("2");
+  log_msg("Done Waiting on listener thread");
+
+  log_msg("Waiting on scheduler thread");
   pthread_join(t_scheduler, NULL);
+  log_msg("Done Waiting on scheduler thread");
+
   log_msg("after join in main");
+
   display();
   close(sockfd);
   return 0;
