@@ -169,13 +169,8 @@ void *thread_listen(void *arg)
     snprintf(time_arrival, sizeof time_arrival, ch, tv.tv_usec); //printing the needed timestamp string
 
   /*  FILE * file_des=fopen(file,"a"); 
-  printf("\n in  serving thread \n");
-  
-  
   fprintf(file_des,"%s\n",time_arrival);
-  
   fclose(file_des);
-    
   */  
     char *file_name=malloc(sizeof(char *));
 
@@ -309,7 +304,7 @@ int main(int argc, char *args[])
   {
     if(chdir(dir)<0)
       {
-        perror("\ndirectory doesnt exist");
+        perror("directory doesnt exist\n");
         exit(1);
       }
   }
