@@ -142,21 +142,21 @@ void *thread_listen(void *arg)
   int retcode;
   off_t file_size;
   char in_buf[BUF_SIZE];
-  
-  char *fname=malloc(sizeof(char *));  
-  struct stat st; 
+
+  char *fname=malloc(sizeof(char *));
+  struct stat st;
   int k,j;
-  
+
   int l;
-  
-  listen(sockfd,5);                // listens
+
+  listen(sockfd,5);
   log_msg("in listening thread before listen");
 
-  while(1)     
-  {  
+  while(1)
+  {
     log_msg("in listening thread before accept");
     acceptfd = accept(sockfd,(struct sockaddr *) &cli_addr,&clilen);
-    if (acceptfd < 0) 
+    if (acceptfd < 0)
       perror("error in accepting");
 
     unsigned int ip=cli_addr.sin_addr.s_addr;
