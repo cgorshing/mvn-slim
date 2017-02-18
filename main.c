@@ -208,11 +208,12 @@ void *thread_listen(void *arg)
       }
 
       log_msg("in listening thread after accepting and before inserting into queue");
-      //pthread_mutex_lock(&qmutex);
-      insertion(acceptfd,file_name,file_size,ip,time_arrival,in_buf);
-      printf("acceptfd is %d, file name is %s, file name is %zd\n", acceptfd, file_name, file_size);
-      log_msg("inserted ino queue");
-      //pthread_mutex_unlock(&qmutex);
+
+      pthread_mutex_lock(&qmutex);
+      insertion(acceptfd, file_name, file_size, ip, time_arrival, in_buf);
+      pthread_mutex_unlock(&qmutex);
+
+      log_msg("inserted into queue");
       printf("newsockfd in thread: %p\n", newsockfd);
     }
     else
