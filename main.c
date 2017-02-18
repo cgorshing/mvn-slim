@@ -28,7 +28,6 @@ int received_interrupt = 0;
 
 sem_t *sem;
 int free_thread;
-int sched_flag=0;
 int debug_flag=0;
 int log_flag=0;
 char * file=NULL;
@@ -120,43 +119,6 @@ struct request extract_element()
   struct request result;
   return result;
 }
- 
-struct request removesjf(int num)
-{ 
-  log_msg("entered removesjf");
-  if(front==NULL)
-  {
-     log_msg("empty list");
-  }
-  else
-  {
-    struct node *old,*temp;
-    temp=front;
-    while(temp!=NULL)
-    {
-      if(temp->r.acceptfd==num)
-      { 
-        if(temp==front) 
-          front=temp->link; 
-        else 
-          old->link=temp->link;
-        return(temp->r);
-        free(temp);
-        
-      }
-      else
-      { 
-        old=temp;
-        temp=temp->link;
-      }
-    }
-  }
-
-  struct request result;
-
-  return result;
-}
-
 // end of queue functions
 
 
@@ -334,7 +296,7 @@ int main(int argc, char *args[])
     exit(1);
   }
 
-//printf( "\n debug : %d, help: %d, log: %d, file name : %s port num : %d, dir : %d dir name: %s, time :%d ,thread num : %d, sched : %d",debug_flag,help_flag,log_flag,file,portnum,dir_flag,dir,sleep_time,threadnum,sched_flag);  
+  //printf( "debug : %d, help: %d, log: %d, file name : %s port num : %d, dir : %d dir name: %s, time :%d ,thread num : %d\n",debug_flag,help_flag,log_flag,file,portnum,dir_flag,dir,sleep_time,threadnum);
   //Parser code ends
 
   if(help_flag==1)      // printing help options and exit if -h option is specified
@@ -390,5 +352,5 @@ int main(int argc, char *args[])
 
 void print_help_options()
 {
-  printf("−d : Enter debugging mode. That is, do not daemonize, only accept one connection at a \ntime and enable logging to stdout. Without this option, the web server should run as a daemon process in the background. \n−h : Print a usage summary with all options and exit. \n−l file : Log all requests to the given file. See LOGGING for details.\n−p port : Listen on the given port. If not provided, myhttpd will listen on port 8080. \n−r dir : Set the root directory for the http server to dir. \n−t time : Set the queuing time to time seconds. The default should be 60 seconds. \n−n threadnum: Set number of threads waiting ready in the execution thread pool to threadnum. \nThe default should be 4 execution threads. \n−s sched: Set the scheduling policy. It can be either FCFS or SJF. The default will be FCFS.");
+  printf("−d : Enter debugging mode. That is, do not daemonize, only accept one connection at a \ntime and enable logging to stdout. Without this option, the web server should run as a daemon process in the background. \n−h : Print a usage summary with all options and exit. \n−l file : Log all requests to the given file. See LOGGING for details.\n−p port : Listen on the given port. If not provided, myhttpd will listen on port 8080. \n−r dir : Set the root directory for the http server to dir. \n−t time : Set the queuing time to time seconds. The default should be 60 seconds. \n−n threadnum: Set number of threads waiting ready in the execution thread pool to threadnum. \nThe default should be 4 execution threads.");
 }
