@@ -267,18 +267,18 @@ int main(int argc, char *args[])
     }
     else if(strcmp(args[i],"-r")==0)
     {
-      dir_flag=1;    
+      dir_flag=1;
       dir=args[i+1];
     }
     else if(strcmp(args[i],"-t")==0)
     {
-      time_flag=1;    
+      time_flag=1;
       sleep_time=atoi(args[i+1]);
     }
   }
-  
-  //sem = sem_open(&sem,0,threadnum);
-  if ((sem = sem_open("wrenchsemaphore", O_CREAT, 0644, 1)) == SEM_FAILED) {
+
+  sem_unlink("wrenchsemaphore");
+  if ((sem = sem_open("wrenchsemaphore", O_CREAT | O_EXCL, 0600, threadnum)) == SEM_FAILED) {
     perror("semaphore initilization");
     exit(1);
   }
