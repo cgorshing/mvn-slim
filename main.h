@@ -10,8 +10,6 @@
 #define MESS_404    "<html><body><h1>FILE NOT FOUND</h1></body></html>"
 
 sem_t *sem;
-extern int free_thread;
-extern int sched_flag;
 
 extern int received_interrupt;
 
@@ -32,13 +30,12 @@ struct request
   unsigned int cli_ipaddr;
   char time_arrival[1024];
   char in_buf[2048];
-  
-}r2; 
+
+}r2;
 // queue function declarations;
-void insertion(int,char*, int, unsigned int,char*,char*);  
+void insertion(int,char*, int, unsigned int,char*,char*);
 //void insertion(int,string, int);
 struct request extract_element();
-struct request removesjf();
 void display();
 void print_help_options();
 void log_msg(char * message);
@@ -46,7 +43,7 @@ void log_msg(char * message);
 //queue structre
 struct node
 {
-  struct request r;  
+  struct request r;
   struct node *link;
 };
 typedef struct node N;
