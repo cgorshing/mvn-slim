@@ -22,13 +22,13 @@ pthread_mutex_t sthread_mutex=PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond_var = PTHREAD_COND_INITIALIZER;
 
 pthread_t t_listener;
-pthread_t t_scheduler;
 
 int received_interrupt = 0;
 
-int debug_flag=0;
-int log_flag=0;
-char * file=NULL;
+int true = 1;
+int debug_flag = 0;
+int log_flag = 0;
+char * file = NULL;
 pthread_t t_serve;
 
 struct node *front = NULL;
@@ -53,7 +53,6 @@ void handle_term(int signum) {
   received_interrupt = 1;
 
   pthread_cancel(t_listener);
-  pthread_cancel(t_scheduler);
 
   write(0, "Received interrupt signal!\n", 27);
 }
@@ -336,19 +335,12 @@ int main(int argc, char *args[])
   }
 
   ids=sockfd;
-  log_msg("before creating scheduler thread");
   printf("before creating thread sockfd is %d\n",ids);
-
-  pthread_create(&t_listener, NULL, &thread_listen, &ids);      //creating listener thread
-  pthread_create(&t_scheduler, NULL, &thread_scheduler, NULL);  //creating scheduler thread
+  pthread_create(&t_listener, NULL, &thread_listen, &ids);
 
   log_msg("Waiting on listener thread");
   pthread_join(t_listener, NULL);
   log_msg("Done Waiting on listener thread");
-
-  log_msg("Waiting on scheduler thread");
-  pthread_join(t_scheduler, NULL);
-  log_msg("Done Waiting on scheduler thread");
 
   log_msg("after join in main");
 

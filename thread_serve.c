@@ -126,37 +126,6 @@ void *thread_serve()
 
       //Done sending to client
       close(acceptfd);
-
-      //pthread_mutex_lock(&sthread_mutex);
-      //pthread_mutex_unlock(&sthread_mutex);
-    }
-  }
-}
-
-//scheduler thread
-void *thread_scheduler(void *arg)
-{
-  int acceptfd;
-  int n;
-
-  while(1)
-  {
-    if(front!=NULL)
-    {
-      log_msg("sssin sched thread before extracting element");
-      log_msg("sssscheduler locking mutex");
-      pthread_mutex_lock(&sthread_mutex);
-
-      r2 = pop_message();
-
-      // call serving thread from thread pool
-
-      log_msg("sssin sched thread before sending to serving thread");
-
-      pthread_cond_signal(&cond_var);
-
-      pthread_mutex_unlock(&sthread_mutex);
-      log_msg("sssin sched thread unlocked sthread mutex");
     }
   }
 }
