@@ -78,6 +78,8 @@ void display()
 // queue functions
 void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,char * in_buf)
 {
+  pthread_mutex_lock(&qmutex);
+
   new=(N*)malloc(sizeof(N));
   int n;
   char a[1024];
@@ -102,6 +104,9 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
   rear=new;
   log_msg("inserted request into queue");
   display();
+
+  pthread_cond_signal(&cond_var);
+  pthread_mutex_unlock(&qmutex);
 }
 
 struct request extract_element()
@@ -211,10 +216,7 @@ void *thread_listen(void *arg)
 
       log_msg("in listening thread after accepting and before inserting into queue");
 
-      pthread_mutex_lock(&qmutex);
       insertion(acceptfd, file_name, file_size, ip, time_arrival, in_buf);
-
-      pthread_mutex_unlock(&qmutex);
 
       log_msg("inserted into queue");
       printf("newsockfd in thread: %p\n", newsockfd);
