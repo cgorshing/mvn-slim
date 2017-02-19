@@ -13,6 +13,8 @@
 #include <time.h>
 #include <semaphore.h>
 
+#include <assert.h>
+
 #include "main.h"
 
 struct request pop_message();
@@ -21,16 +23,7 @@ void *thread_serve()
 {
   while(1)
   {
-    log_msg("entered serving thread");
-    pthread_mutex_lock(&sthread_mutex);
-    pthread_cond_wait(&cond_var,&sthread_mutex);
-
-    log_msg("got signal");
-    //wait on condition mutex
-
-    struct request r = r2;
-    pthread_mutex_unlock(&sthread_mutex);
-    log_msg("serving thread unlocked sthread_mutex");
+    struct request r = pop_message();
 
     time_t now;
     time(&now);
@@ -135,9 +128,21 @@ struct request pop_message() {
 
   log_msg("sssExtracting next item from list...");
   pthread_mutex_lock(&qmutex);
+
+  while (front == NULL) {
+    log_msg("checking...");
+    int res = pthread_cond_wait(&cond_var, &qmutex);
+    if (res != 0)
+      printf("**************************************************** pthread_cond_wait error: %d\n", res);
+  }
+
+  // hmmmm do I want this or something else?
+  assert(front != NULL);
   result = extract_element();
+
   pthread_mutex_unlock(&qmutex);
   log_msg("sssDone Extracting next item from list.");
 
   return result;
+
 }
