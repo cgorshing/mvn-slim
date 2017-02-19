@@ -103,5 +103,6 @@ This are some things that were once in the code base and the comments have been
 removed. Leaving here for longivity.
 
 * https://github.com/ankushagarwal/nweb/blob/master/nweb23.c
+* https://github.com/adilansari/myhttpd
 * http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/
 * code adapted from stackoverflow.com
