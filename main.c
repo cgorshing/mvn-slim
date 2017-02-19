@@ -326,7 +326,7 @@ int main(int argc, char *args[])
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port =htons(portnum);
   log_msg("before bind");
-  if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {    //binding socket
+  if (bind(sockfd, (struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) {
     perror("binding error\n");
     exit(1);
   }
