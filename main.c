@@ -317,7 +317,8 @@ int main(int argc, char *args[])
   struct sockaddr_in serv_addr;
   log_msg("before socket creation");
   sockfd = socket(AF_INET, SOCK_STREAM,0);      //creation of socket
-  //s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1);
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &true, sizeof(int));
+
   printf("after socket creation socket id is %d\n", sockfd);
   if (sockfd < 0)
     perror("error creating socket\n");
