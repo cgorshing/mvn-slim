@@ -17,8 +17,15 @@ extern char * file;
 extern pthread_t t_serve;
 
 extern pthread_mutex_t qmutex;
-extern pthread_mutex_t sthread_mutex;
 extern pthread_cond_t cond_var;
+
+struct repository {
+  char url[2048];
+  int type;
+};
+extern struct repository *repo_rear;
+extern struct repository *repo_front;
+extern struct repository *repo_p;
 
 struct request
 {
@@ -28,15 +35,13 @@ struct request
   unsigned int cli_ipaddr;
   char time_arrival[1024];
   char in_buf[2048];
+};
 
-}r2;
 // queue function declarations;
 void insertion(int,char*, int, unsigned int,char*,char*);
-//void insertion(int,string, int);
-struct request extract_element();
 void display();
 void print_help_options();
-void log_msg(char * message);
+void log_msg(const char * message);
 
 //queue structre
 struct node
@@ -46,10 +51,6 @@ struct node
 };
 typedef struct node N;
 
-extern N *rear;
-extern N *front;
-extern N *p;
-extern N *temp;
-extern N *new;
+extern N *front_node;
 
 #endif

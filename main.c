@@ -18,7 +18,6 @@
 #include "thread_serve.h"
 
 pthread_mutex_t qmutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t sthread_mutex=PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond_var = PTHREAD_COND_INITIALIZER;
 
 pthread_t t_listener;
@@ -31,13 +30,10 @@ int log_flag = 0;
 char * file = NULL;
 pthread_t t_serve;
 
-struct node *front = NULL;
+struct node *front_node = NULL;
 struct node *rear = NULL;
-struct node *p = NULL;
-struct node *temp = NULL;
-struct node *new = NULL;
 
-void log_msg(char * message) {
+void log_msg(const char * message) {
   time_t now;
   time(&now);
   struct tm * ct=localtime(&now); //getting localtime
@@ -59,13 +55,13 @@ void handle_term(int signum) {
 
 void display()
 {
-  if(front == NULL)
+  if(front_node == NULL)
     log_msg("empty queue");
   else
   {
     int a;
 
-    temp = front;
+    struct node *temp = front_node;
     while(temp!=NULL)
     {
       a = temp->r.acceptfd;
@@ -80,7 +76,7 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
 {
   pthread_mutex_lock(&qmutex);
 
-  new=(N*)malloc(sizeof(N));
+  struct node *new = (N*)malloc(sizeof(N));
   int n;
   char a[1024];
   char b[1024];
@@ -97,8 +93,8 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
   //new->r.file_name=a;
   new->r.size=size;
   new->link=NULL;
-  if(front==NULL)
-    front=new;
+  if(front_node==NULL)
+    front_node=new;
   else
     rear->link=new;
   rear=new;
@@ -107,27 +103,6 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
 
   pthread_cond_signal(&cond_var);
   pthread_mutex_unlock(&qmutex);
-}
-
-struct request extract_element()
-{
-  if(front==NULL)
-    log_msg("empty queue");
-  else
-  {
-    struct request r1;
-    p=front;
-    printf("extracted element: %d",p->r.acceptfd);
-    front=front->link;
-    r1.acceptfd=p->r.acceptfd;
-    strcpy(r1.file_name,p->r.file_name);
-    r1.size=p->r.size;
-    free(p);
-    return(r1);
-  }
-
-  struct request result;
-  return result;
 }
 // end of queue functions
 

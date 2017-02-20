@@ -19,6 +19,28 @@
 
 struct request pop_message();
 
+struct request extract_element()
+{
+  if(front_node==NULL)
+    log_msg("empty queue");
+  else
+  {
+    struct request r1;
+
+    struct node *p_node = front_node;
+    printf("extracted element: %d",p_node->r.acceptfd);
+    front_node=front_node->link;
+    r1.acceptfd=p_node->r.acceptfd;
+    strcpy(r1.file_name,p_node->r.file_name);
+    r1.size=p_node->r.size;
+    free(p_node);
+    return(r1);
+  }
+
+  struct request result;
+  return result;
+}
+
 void *thread_serve()
 {
   while(1)
@@ -129,15 +151,17 @@ struct request pop_message() {
   log_msg("sssExtracting next item from list...");
   pthread_mutex_lock(&qmutex);
 
-  while (front == NULL) {
+  while (front_node == NULL) {
     log_msg("checking...");
+
+    //It is my understanding that pthread_cond_wait will wait until notified on the cond_var, but I had some issues around this.
     int res = pthread_cond_wait(&cond_var, &qmutex);
     if (res != 0)
       printf("**************************************************** pthread_cond_wait error: %d\n", res);
   }
 
   // hmmmm do I want this or something else?
-  assert(front != NULL);
+  assert(front_node != NULL);
   result = extract_element();
 
   pthread_mutex_unlock(&qmutex);
