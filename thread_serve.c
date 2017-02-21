@@ -32,7 +32,6 @@ struct request extract_element()
     front_node=front_node->link;
     r1.acceptfd=p_node->r.acceptfd;
     strcpy(r1.file_name,p_node->r.file_name);
-    r1.size=p_node->r.size;
     free(p_node);
     return(r1);
   }
@@ -40,6 +39,8 @@ struct request extract_element()
   struct request result;
   return result;
 }
+
+int hosted_proxy_result();
 
 void *thread_serve()
 {
@@ -55,7 +56,7 @@ void *thread_serve()
     strftime(ch, sizeof ch, "[%Y-%m-%d %H:%M:%S%z]", ct);
     snprintf(time_serve, sizeof time_serve, ch, tv.tv_usec);
 
-    unsigned int ip=r.cli_ipaddr;
+    unsigned int ip = r.cli_ipaddr;
 
     unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
@@ -65,31 +66,25 @@ void *thread_serve()
 
     if (debug_flag == 0 && log_flag == 1)
     {
-      FILE * file_des=fopen(file,"a");
-      log_msg("in serving thread");
+      FILE * file_des = fopen(file,"a");
 
       fprintf(file_des,"%d.%d.%d.%d\t-\t ", bytes[0], bytes[1], bytes[2], bytes[3]);
-      fprintf(file_des,"%s\t %s\t %s \t status\t %d\n",r.time_arrival,time_serve,r.in_buf,r.size);
+      fprintf(file_des,"%s\t %s\t %s \t status\n",r.time_arrival,time_serve,r.in_buf);
 
       fclose(file_des);
     }
     else if (debug_flag == 1)
     {
-      printf("%d.%d.%d.%d\t-\t %s\t %s\t %s \t status\t %d\n", bytes[0], bytes[1], bytes[2], bytes[3],r.time_arrival,time_serve,r.in_buf,r.size);
-      //fprintf(stdout,"%s\t %s\t %s \t status\t %d\n",r.time_arrival,time_serve,r.in_buf,r.size);
+      printf("%d.%d.%d.%d\t-\t %s\t %s\t %s\n", bytes[0], bytes[1], bytes[2], bytes[3],r.time_arrival,time_serve,r.in_buf);
+      //fprintf(stdout,"%s\t %s\t %s \t status\n",r.time_arrival,time_serve,r.in_buf);
     }
-
-    log_msg("in serving thread copied structure");
 
     char           in_buf[BUF_SIZE];
     char           out_buf[BUF_SIZE];
-    char           *file_name;
-    file_name = malloc(sizeof(char *));
-    int acceptfd;
+    char           *file_name = malloc(sizeof(char *));
+    int            acceptfd;
     unsigned int   fd1;
     unsigned int   buffer_length;
-    unsigned int   retcode;
-    int m;
 
     log_msg("in serving thread before copying variables");
     acceptfd = r.acceptfd;
@@ -103,6 +98,8 @@ void *thread_serve()
 /* This part of code adopted from http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/ */
 
     fd1 = open(&file_name[1], O_RDONLY, S_IREAD | S_IWRITE);
+
+    hosted_proxy_result(file_name);
 
     memset(out_buf, 0, sizeof(out_buf));
 
@@ -168,5 +165,17 @@ struct request pop_message() {
   log_msg("sssDone Extracting next item from list.");
 
   return result;
+}
 
+int hosted_proxy_result(char * file_name) {
+  printf("************************ File name of: %s\n", file_name);
+
+  struct repository *curr_p = repo_front;
+
+  while (curr_p != NULL) {
+    printf("Looking through repo: %s\n", curr_p->name);
+    curr_p = curr_p->link;
+  }
+
+  return 0;
 }
