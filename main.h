@@ -17,12 +17,19 @@ extern char * file;
 extern pthread_t t_serve;
 
 extern pthread_mutex_t qmutex;
+extern pthread_mutex_t repo_mutex;
 extern pthread_cond_t cond_var;
 
 struct repository {
+  char name[64];
   char url[2048];
+  char path[2048];
   int type;
+  struct repository *link;
 };
+#define REPO_PROXY 32768
+#define REPO_HOSTED REPO_PROXY + 1
+
 extern struct repository *repo_rear;
 extern struct repository *repo_front;
 extern struct repository *repo_p;
@@ -30,7 +37,6 @@ extern struct repository *repo_p;
 struct request
 {
   int acceptfd;
-  int size;
   char file_name[1024];
   unsigned int cli_ipaddr;
   char time_arrival[1024];
@@ -38,10 +44,10 @@ struct request
 };
 
 // queue function declarations;
-void insertion(int,char*, int, unsigned int,char*,char*);
+void insertion(int, char*, unsigned int, char*, char*);
 void display();
 void print_help_options();
-void log_msg(const char * message);
+void log_msg(const char * message, ...);
 
 //queue structre
 struct node
