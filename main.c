@@ -1,6 +1,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -18,6 +19,7 @@
 #include "thread_serve.h"
 
 pthread_mutex_t qmutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t repo_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond_var = PTHREAD_COND_INITIALIZER;
 
 pthread_t t_listener;
@@ -33,7 +35,32 @@ pthread_t t_serve;
 struct node *front_node = NULL;
 struct node *rear = NULL;
 
-void log_msg(const char * message) {
+struct repository *repo_front;
+struct repository *repo_rear;
+
+void build_repo_list() {
+  pthread_mutex_lock(&repo_mutex);
+
+  struct repository *new = (struct repository*)malloc(sizeof(struct repository));
+  strcpy(new->name, "Simple Beginning Repository - Hardcoded");
+  strcpy(new->path, "/some/path/does/not/exist");
+  new->type = REPO_HOSTED;
+  new->link = NULL;
+
+  //TODO I think I like having a prefix to limit first instead of word reading.
+  // repo_front is better than front_repo
+  // maybe head and tail is better than front rear
+  if (front_node == NULL)
+    repo_front = new;
+  else
+    repo_rear->link = new;
+  repo_rear = new;
+
+  pthread_mutex_unlock(&repo_mutex);
+}
+
+
+void log_msg(const char * message, ...) {
   time_t now;
   time(&now);
   struct tm * ct=localtime(&now); //getting localtime
@@ -55,24 +82,26 @@ void handle_term(int signum) {
 
 void display()
 {
-  if(front_node == NULL)
+  if (front_node == NULL)
     log_msg("empty queue");
   else
   {
-    int a;
-
     struct node *temp = front_node;
-    while(temp!=NULL)
+    while (temp != NULL)
     {
-      a = temp->r.acceptfd;
-      printf("acceptfd is %d, file name is %s, file size is %d , ip addr is %u, request is %s,time is %s\n",a,temp->r.file_name,temp->r.size,temp->r.cli_ipaddr,temp->r.in_buf,temp->r.time_arrival);
+      printf("acceptfd is %d, file name is %s, ip addr is %u, request is %s,time is %s\n",
+          temp->r.acceptfd,
+          temp->r.file_name,
+          temp->r.cli_ipaddr,
+          temp->r.in_buf,
+          temp->r.time_arrival);
       temp=temp->link;
     }
   }
 }
 
 // queue functions
-void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,char * in_buf)
+void insertion(int afd, char *f, unsigned int ip, char * time_arrival, char * in_buf)
 {
   pthread_mutex_lock(&qmutex);
 
@@ -91,7 +120,6 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
   strcpy(new->r.in_buf,c);
 
   //new->r.file_name=a;
-  new->r.size=size;
   new->link=NULL;
   if(front_node==NULL)
     front_node=new;
@@ -111,7 +139,7 @@ void insertion(int afd,char *f,int size,unsigned int ip, char * time_arrival,cha
 void *thread_listen(void *arg)
 {
   int sockfd=*((int*)arg);
-  int i,size;
+  int i;
   int acceptfd,ids2;
   socklen_t clilen;
   int newsockfd[10],c;
@@ -124,7 +152,6 @@ void *thread_listen(void *arg)
   char request_buffer[1024];
 
   int retcode;
-  off_t file_size;
   char in_buf[BUF_SIZE];
 
   char *fname=malloc(sizeof(char *));
@@ -178,14 +205,14 @@ void *thread_listen(void *arg)
     {
       log_msg("in listening thread after accepting and before inserting into queue");
 
-      insertion(acceptfd, file_name, file_size, ip, time_arrival, in_buf);
+      insertion(acceptfd, file_name, ip, time_arrival, in_buf);
 
       log_msg("inserted into queue");
       printf("newsockfd in thread: %p\n", newsockfd);
     }
     else
     {
-      continue;
+      log_msg("Had a problem with parsing out the file_name.");
     }
   }
 }
@@ -221,6 +248,8 @@ int main(int argc, char *args[])
   int dir_flag = 0;
   int time_flag;
   int threadnum_flag = 0;
+
+  build_repo_list();
 
   // Parser code
   for (i = 0; i < argc; ++i)
