@@ -176,19 +176,6 @@ void *thread_listen(void *arg)
 
     if(file_name != NULL)
     {
-      k=1;
-      j=0;
-      while(k < strlen(file_name))
-      {
-        fname[j] = file_name[k];
-        ++k;
-        ++j;
-      }
-
-      if (stat(fname, &st) == 0) {
-        file_size = st.st_size;
-      }
-
       log_msg("in listening thread after accepting and before inserting into queue");
 
       insertion(acceptfd, file_name, file_size, ip, time_arrival, in_buf);
