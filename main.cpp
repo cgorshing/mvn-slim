@@ -26,7 +26,6 @@ pthread_t t_listener;
 
 int received_interrupt = 0;
 
-int true = 1;
 int debug_flag = 0;
 int log_flag = 0;
 char * file = NULL;
@@ -41,20 +40,20 @@ struct repository *repo_rear;
 void build_repo_list() {
   pthread_mutex_lock(&repo_mutex);
 
-  struct repository *new = (struct repository*)malloc(sizeof(struct repository));
-  strcpy(new->name, "Simple Beginning Repository - Hardcoded");
-  strcpy(new->path, "/some/path/does/not/exist");
-  new->type = REPO_HOSTED;
-  new->link = NULL;
+  struct repository *new_repo = (struct repository*)malloc(sizeof(struct repository));
+  strcpy(new_repo->name, "Simple Beginning Repository - Hardcoded");
+  strcpy(new_repo->path, "/opt/wrench/simple-repo-hardcoded");
+  new_repo->type = REPO_HOSTED;
+  new_repo->link = NULL;
 
   //TODO I think I like having a prefix to limit first instead of word reading.
   // repo_front is better than front_repo
   // maybe head and tail is better than front rear
   if (front_node == NULL)
-    repo_front = new;
+    repo_front = new_repo;
   else
-    repo_rear->link = new;
-  repo_rear = new;
+    repo_rear->link = new_repo;
+  repo_rear = new_repo;
 
   pthread_mutex_unlock(&repo_mutex);
 }
@@ -68,6 +67,18 @@ void log_msg(const char * message, ...) {
   struct timeval tv;
   strftime(ch, sizeof ch, "[%Y-%m-%d %H:%M:%S%z]", ct);
   snprintf(time_serve, sizeof time_serve, ch, tv.tv_usec);
+
+  //va_list valist;
+  //va_start(valist, message);
+
+  //char *buff_message = NULL;
+  //int size_needed = vsnprintf(buff_message, 0, message, valist);
+
+  //buff_message = malloc(size_needed + 1); // 1 for a null character
+  //vsnprintf(buff_message, size_needed, message, valist);
+  //printf("%s", buff_message);
+
+  //free(buff_message);
 
   printf("%s %s\n", time_serve, message);
 }
@@ -105,27 +116,26 @@ void insertion(int afd, char *f, unsigned int ip, char * time_arrival, char * in
 {
   pthread_mutex_lock(&qmutex);
 
-  struct node *new = (N*)malloc(sizeof(N));
-  int n;
+  struct node *new_node = (N*)malloc(sizeof(N));
   char a[1024];
   char b[1024];
   char c[1024];
   strcpy(a,f);
   strcpy(b,time_arrival);
   strcpy(c,in_buf);
-  new->r.acceptfd=afd;
-  strcpy(new->r.file_name,a);
-  new->r.cli_ipaddr=ip;
-  strcpy(new->r.time_arrival,b);
-  strcpy(new->r.in_buf,c);
+  new_node->r.acceptfd=afd;
+  strcpy(new_node->r.file_name,a);
+  new_node->r.cli_ipaddr=ip;
+  strcpy(new_node->r.time_arrival,b);
+  strcpy(new_node->r.in_buf,c);
 
-  //new->r.file_name=a;
-  new->link=NULL;
+  //new_node->r.file_name=a;
+  new_node->link=NULL;
   if(front_node==NULL)
-    front_node=new;
+    front_node=new_node;
   else
-    rear->link=new;
-  rear=new;
+    rear->link=new_node;
+  rear=new_node;
   log_msg("inserted request into queue");
   display();
 
@@ -139,26 +149,14 @@ void insertion(int afd, char *f, unsigned int ip, char * time_arrival, char * in
 void *thread_listen(void *arg)
 {
   int sockfd=*((int*)arg);
-  int i;
-  int acceptfd,ids2;
+  int acceptfd;
   socklen_t clilen;
-  int newsockfd[10],c;
-  int n;
-  char buffer[256];
-  pthread_t t_serve[10];
+  int newsockfd[10];
   struct sockaddr_in cli_addr;
   clilen = sizeof(cli_addr);
-  unsigned int retval;
-  char request_buffer[1024];
 
   int retcode;
   char in_buf[BUF_SIZE];
-
-  char *fname=malloc(sizeof(char *));
-  struct stat st;
-  int k,j;
-
-  int l;
 
   listen(sockfd,5);
   log_msg("in listening thread before listen");
@@ -184,7 +182,7 @@ void *thread_listen(void *arg)
     fprintf(file_des,"%s\n",time_arrival);
     fclose(file_des);
     */
-    char *file_name=malloc(sizeof(char *));
+    char *file_name = (char*)malloc(sizeof(char *));
 
     memset(in_buf, 0, sizeof(in_buf));
     retcode = recv(acceptfd, in_buf, BUF_SIZE, 0);
@@ -219,12 +217,11 @@ void *thread_listen(void *arg)
 
 int main(int argc, char *args[])
 {
-  int thread_status[10];
   pthread_t t_serve[10];
   int sockfd;
   int ids;
-  char *dir = malloc(sizeof(char *));
-  file=malloc(sizeof(char *));
+  char *dir = (char*)malloc(sizeof(char *));
+  file = (char*)malloc(sizeof(char *));
 
 
   //********************
@@ -247,7 +244,6 @@ int main(int argc, char *args[])
   int help_flag = 0;
   int dir_flag = 0;
   int time_flag;
-  int threadnum_flag = 0;
 
   build_repo_list();
 
@@ -308,7 +304,8 @@ int main(int argc, char *args[])
   struct sockaddr_in serv_addr;
   log_msg("before socket creation");
   sockfd = socket(AF_INET, SOCK_STREAM,0);      //creation of socket
-  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &true, sizeof(int));
+  int sock_opt = 1;
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sock_opt, sizeof(int));
 
   printf("after socket creation socket id is %d\n", sockfd);
   if (sockfd < 0)

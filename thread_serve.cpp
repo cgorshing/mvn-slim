@@ -12,37 +12,39 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <semaphore.h>
-
+#include <string>
 #include <assert.h>
 
 #include "main.h"
 
+using std::string;
+
+int hosted_proxy_result(char * file_name);
 struct request pop_message();
 
 struct request extract_element()
 {
-  if(front_node==NULL)
+  struct request result;
+
+  if(front_node==NULL) {
     log_msg("empty queue");
+    result.acceptfd = 0;
+    result.file_name[0] = 0;
+  }
   else
   {
-    struct request r1;
-
     struct node *p_node = front_node;
     printf("extracted element: %d",p_node->r.acceptfd);
-    front_node=front_node->link;
-    r1.acceptfd=p_node->r.acceptfd;
-    strcpy(r1.file_name,p_node->r.file_name);
+    front_node = front_node->link;
+    result.acceptfd = p_node->r.acceptfd;
+    strcpy(result.file_name, p_node->r.file_name);
     free(p_node);
-    return(r1);
   }
 
-  struct request result;
   return result;
 }
 
-int hosted_proxy_result();
-
-void *thread_serve()
+void *thread_serve(void * params)
 {
   while(1)
   {
@@ -79,9 +81,8 @@ void *thread_serve()
       //fprintf(stdout,"%s\t %s\t %s \t status\n",r.time_arrival,time_serve,r.in_buf);
     }
 
-    char           in_buf[BUF_SIZE];
     char           out_buf[BUF_SIZE];
-    char           *file_name = malloc(sizeof(char *));
+    char           *file_name = (char*)malloc(sizeof(char *));
     int            acceptfd;
     unsigned int   fd1;
     unsigned int   buffer_length;
@@ -168,13 +169,37 @@ struct request pop_message() {
 }
 
 int hosted_proxy_result(char * file_name) {
+  std::string name = "chad";
   printf("************************ File name of: %s\n", file_name);
 
   struct repository *curr_p = repo_front;
 
+  std::string prefix(PREFIX);
+  std::string fileName(file_name);
+
   while (curr_p != NULL) {
     printf("Looking through repo: %s\n", curr_p->name);
-    curr_p = curr_p->link;
+
+    if (std::equal(prefix.begin(), prefix.end(), fileName.begin())) {
+        printf("We know this path: %s\n", fileName.c_str());
+        
+        std::string requestedFile(fileName.substr(prefix.length()).c_str());
+        printf("Cycle through and find: %s\n", requestedFile.c_str());
+
+        printf("Full path to retrieve: %s\n", (std::string(prefix) + requestedFile).c_str());
+    }
+    else {
+        printf("We don't know this path: %s\n", file_name);
+    }
+
+
+    /*
+    Find full path requested
+    Look at drive
+    Look through list of repos
+    Find excluded files
+    Return http result
+    */
   }
 
   return 0;
