@@ -1,1 +1,1 @@
-void *thread_serve();
+void *thread_serve(void *params);

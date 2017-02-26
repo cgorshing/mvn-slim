@@ -27,8 +27,10 @@ struct repository {
   int type;
   struct repository *link;
 };
+
 #define REPO_PROXY 32768
 #define REPO_HOSTED REPO_PROXY + 1
+#define PREFIX "/repository/maven-public"
 
 extern struct repository *repo_rear;
 extern struct repository *repo_front;
@@ -49,7 +51,7 @@ void display();
 void print_help_options();
 void log_msg(const char * message, ...);
 
-//queue structre
+//queue structure
 struct node
 {
   struct request r;
