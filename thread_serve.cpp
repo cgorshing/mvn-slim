@@ -84,7 +84,6 @@ void *thread_serve(void * params)
     char           out_buf[BUF_SIZE];
     char           *file_name = (char*)malloc(sizeof(char *));
     int            acceptfd;
-    unsigned int   fd1;
     unsigned int   buffer_length;
 
     log_msg("in serving thread before copying variables");
@@ -96,50 +95,37 @@ void *thread_serve(void * params)
 
     log_msg("in serving thread opening file");
 
-/* This part of code adopted from http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/ */
-
-    fd1 = open(&file_name[1], O_RDONLY, S_IREAD | S_IWRITE);
-
-    hosted_proxy_result(file_name);
-
     memset(out_buf, 0, sizeof(out_buf));
-
-    if (fd1 == -1)
-    {
+    if (hosted_proxy_result(file_name) == 1) {
       printf("File %s not found - sending an HTTP 404 \n", &file_name[1]);
       strcpy(out_buf, NOTOK_404);
       send(acceptfd, out_buf, strlen(out_buf), 0);
       strcpy(out_buf, MESS_404);
       send(acceptfd, out_buf, strlen(out_buf), 0);
     }
-    else
-    {
+    else {
       printf("File %s is being sent\n", &file_name[1]);
-      if ((strstr(file_name, ".jpg") != NULL)||(strstr(file_name, ".gif") != NULL))
-      {
+      if ((strstr(file_name, ".jpg") != NULL)||(strstr(file_name, ".gif") != NULL)) {
         strcpy(out_buf, OK_IMAGE);
       }
-      else
-      {
+      else {
         strcpy(out_buf, OK_TEXT);
       }
 
       send(acceptfd, out_buf, strlen(out_buf), 0);
 
+      unsigned int   fd1 = open(&file_name[1], O_RDONLY, S_IREAD | S_IWRITE);
       buffer_length = 1;
-      while (buffer_length > 0)
-      {
+      while (buffer_length > 0) {
         buffer_length = read(fd1, out_buf, BUF_SIZE);
-        if (buffer_length > 0)
-        {
+        if (buffer_length > 0) {
           send(acceptfd, out_buf, buffer_length, 0);
-/* end of code adapted from http://kturley.com/simple-multi-threaded-web-server-written-in-c-using-pthreads/ */
         }
       }
-
-      //Done sending to client
-      close(acceptfd);
     }
+
+    //Done sending to client
+    close(acceptfd);
   }
 }
 
@@ -169,38 +155,36 @@ struct request pop_message() {
 }
 
 int hosted_proxy_result(char * file_name) {
-  std::string name = "chad";
-  printf("************************ File name of: %s\n", file_name);
+  string prefix(PREFIX);
+  string fileName(file_name);
 
-  struct repository *curr_p = repo_front;
+  if (std::equal(prefix.begin(), prefix.end(), fileName.begin())) {
+    printf("We know this path: %s\n", fileName.c_str());
 
-  std::string prefix(PREFIX);
-  std::string fileName(file_name);
+    std::string requestedFile(fileName.substr(prefix.length()).c_str());
+    printf("Cycle through and find: %s\n", requestedFile.c_str());
 
-  while (curr_p != NULL) {
-    printf("Looking through repo: %s\n", curr_p->name);
+    std::string fullPath(std::string(prefix) + requestedFile);
+    printf("Full path to retrieve: %s\n", fullPath.c_str());
 
-    if (std::equal(prefix.begin(), prefix.end(), fileName.begin())) {
-        printf("We know this path: %s\n", fileName.c_str());
-        
-        std::string requestedFile(fileName.substr(prefix.length()).c_str());
-        printf("Cycle through and find: %s\n", requestedFile.c_str());
+    struct repository *curr_p = repo_front;
+    while (curr_p != NULL) {
+      printf("Looking through repo: %s\n", curr_p->name);
 
-        printf("Full path to retrieve: %s\n", (std::string(prefix) + requestedFile).c_str());
+      curr_p = curr_p->link;
+      
+      /*
+      Find full path requested
+      Look at drive
+      Look through list of repos
+      Find excluded files
+      Return http result
+      */
     }
-    else {
-        printf("We don't know this path: %s\n", file_name);
-    }
-
-
-    /*
-    Find full path requested
-    Look at drive
-    Look through list of repos
-    Find excluded files
-    Return http result
-    */
   }
-
+  else {
+      printf("We don't know this path: %s\n", file_name);
+  }
+  
   return 0;
 }
