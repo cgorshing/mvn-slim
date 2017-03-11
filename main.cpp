@@ -305,7 +305,7 @@ int main(int argc, char *args[])
   log_msg("before socket creation");
   sockfd = socket(AF_INET, SOCK_STREAM,0);      //creation of socket
   int sock_opt = 1;
-  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &sock_opt, sizeof(int));
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (void*)&sock_opt, sizeof(int));
 
   printf("after socket creation socket id is %d\n", sockfd);
   if (sockfd < 0)
