@@ -89,7 +89,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Chad Gorshing** - *Initial work* - [cgorshing](https://github.com/cgorshing)
+* **Chad Gorshing** - *Initial work* - [cgorshing](https://gens.io/profile/cgorshing)
 
 See also the list of [contributors](https://github.com/cgorshing/wrench/contributors) who participated in this project.
 
